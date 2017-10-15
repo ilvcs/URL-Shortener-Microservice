@@ -4,6 +4,13 @@
 // init project
 var express = require('express');
 var app = express();
+var mongoose = require('mongoose');
+var URLS = require('./urls.js');
+var dbUrl = "mongodb://fccdb:t12345@ds121575.mlab.com:21575/surls"
+mongoose.Promise = require('bluebird');
+mongoose.connect(dbUrl);
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
 
 // we've started you off with Express, 
 // but feel free to use whatever libs or frameworks you'd like through `package.json`.
@@ -25,11 +32,25 @@ app.get("/http://:url", function (req, res) {
   if(url.match(bpattren)){
      // got the long url
      // genarate a shortened word with 4 letters
-    var shortUrl =  "https://rhinestone-jewel.glitch.me" +"/" + getRandomString(4)
+     var randomUrl = getRandomString(4)
+    var shortUrl =  "https://rhinestone-jewel.glitch.me" +"/" + randomUrl 
      // save that as a key in the database
-     // and send that url as a response to the user
-    var urlToSend = {"original_url":url,"short_url":shortUrl}
-      res.send(urlToSend);
+    var url = new URLS({
+       shortUrl: randomUrl,
+       longUrl:String(url)
+    })
+    
+    url.save(function(err,data){
+      if(error){
+        console.log("error saving urls");
+      }else{
+        // and send that url as a response to the user
+        var urlToSend = {"original_url":url,"short_url":shortUrl}
+        res.send(urlToSend);
+        
+      }
+    })
+     
       
    }else if(url.match(spattren)){
      // got the shortened url
