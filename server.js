@@ -13,19 +13,23 @@ app.use(express.static('public'));
 
 // http://expressjs.com/en/starter/basic-routing.html
 app.get("/", function (request, response) {
-  response.sendFile(__dirname + '/views/index.html');
+  response.send(request.params);
 });
 
 //Our work goes here
-app.get("/:url", function (req, res) {
+app.get("/http://:url", function (req, res) {
   var url = req.params.url
-   var bpattren = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+  console.log(url)
+   var bpattren = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
    var spattren = /^[a-zA-Z0-9]{4}$/;
   if(url.match(bpattren)){
      // got the long url
      // genarate a shortened word with 4 letters
+    var shortUrl =  "https://rhinestone-jewel.glitch.me" +"/" + getRandomString(4)
      // save that as a key in the database
      // and send that url as a response to the user
+    var urlToSend = {"original_url":url,"short_url":shortUrl}
+      res.send(urlToSend);
       
    }else if(url.match(spattren)){
      // got the shortened url
@@ -35,7 +39,25 @@ app.get("/:url", function (req, res) {
    }else{
      // got the the junk
      // send the error
-     var error = {"error":"This url is not on the database."}
+     var error = {"error":"This url is not the valid url."}
+     res.send(error);
+   }
+});
+
+app.get("/:url", function (req, res) {
+  var url = req.params.url
+  console.log(url)
+  var spattren = /^[a-zA-Z0-9]{4}$/;
+  if(url.match(spattren)){
+     // got the shortened url
+     // query the db to get the long url 
+     // redirect to the long url 
+    res.send(url);
+     
+   }else{
+     // got the the junk
+     // send the error
+     var error = {"error":"This url is not the valid url."}
      res.send(error);
    }
 });
@@ -67,5 +89,10 @@ function getRandomNum(min,max){
 }
 
 function getRandomString(length){
-  
+  var buffer = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+  var string = "";
+  for(var i = 0; i < 4; i++){
+     string += buffer[getRandomNum(0,buffer.length-1)];
+  }
+  return string;
 }
