@@ -21,13 +21,22 @@ app.get("/:url", function (req, res) {
   var url = req.params.url
    var bpattren = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
    var spattren = /^[a-zA-Z0-9]{4}$/;
-  if(url.match(bpattren) === null){
-     // not the url
-     var error = {"error":"This url is not on the database."}
-      res.send(error);
-   }else{
-     // sent the url
+  if(url.match(bpattren)){
+     // got the long url
+     // genarate a shortened word with 4 letters
+     // save that as a key in the database
+     // and send that url as a response to the user
+      
+   }else if(url.match(spattren)){
+     // got the shortened url
+     // query the db to get the long url 
+     // redirect to the long url 
      
+   }else{
+     // got the the junk
+     // send the error
+     var error = {"error":"This url is not on the database."}
+     res.send(error);
    }
 });
 
@@ -52,3 +61,11 @@ var dreams = [
 var listener = app.listen(process.env.PORT, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
+
+function getRandomNum(min,max){
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function getRandomString(length){
+  
+}
