@@ -1,5 +1,6 @@
 // server.js
 // where your node app starts
+"use strict";
 
 // init project
 var express = require('express');
@@ -25,7 +26,7 @@ app.get("/", function (request, response) {
 
 //Our work goes here
 app.get("/http://:url", function (req, res) {
-  var url = req.params.url
+  var url = "http://" + req.params.url
   console.log(url)
    var bpattren = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
    var spattren = /^[a-zA-Z0-9]{4}$/;
